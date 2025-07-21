@@ -1,0 +1,69 @@
+{
+  "version": "0.0.0",
+  "keywords": [],
+  "type": "commonjs",
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "source": "./admin/src/index.js",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
+    "./strapi-server": {
+      "source": "./server/src/index.js",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "strapi-plugin build",
+    "watch": "strapi-plugin watch",
+    "watch:link": "strapi-plugin watch:link",
+    "verify": "strapi-plugin verify"
+  },
+  "dependencies": {
+    "@strapi/design-system": "^2.0.0-rc.29",
+    "@strapi/icons": "^2.0.0-rc.29",
+    "react-intl": "^7.1.11"
+  },
+  "devDependencies": {
+    "@strapi/strapi": "^5.18.1",
+    "@strapi/sdk-plugin": "^5.3.2",
+    "prettier": "^3.6.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1",
+    "styled-components": "^6.1.19"
+  },
+  "peerDependencies": {
+    "@strapi/strapi": "^5.18.1",
+    "@strapi/sdk-plugin": "^5.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1",
+    "styled-components": "^6.1.19"
+  },
+  "strapi": {
+    "kind": "plugin",
+    "name": "strapi-plugin-tiktok-auth-mobile",
+    "displayName": "TikTok Auth Mobile",
+    "description": ""
+  },
+  "name": "strapi-plugin-tiktok-auth-mobile",
+  "description": "Authenticate via TikTok using mobile devices",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@git.e2e4gu.ru/E2E4/strapi-plugin-tiktok-auth-mobile.git"
+  },
+  "bugs": {
+    "url": "https://git.e2e4gu.ru/E2E4/strapi-plugin-tiktok-auth-mobile/issues"
+  },
+  "homepage": "https://git.e2e4gu.ru/E2E4/strapi-plugin-tiktok-auth-mobile#readme",
+  "author": "23devs <developer@23devs.com>"
+}
