@@ -36,9 +36,11 @@ export async function connect(ctx) {
       });
 
     if (user.blocked) {
-      throw new ForbiddenError(
+      const err =  new ForbiddenError(
         'Your account has been blocked by an administrator'
       );
+
+      return ctx.badRequest(err);
     }
 
     return ctx.send({
@@ -49,7 +51,8 @@ export async function connect(ctx) {
       user: await sanitizeUser(user, ctx),
     });
   } catch (error) {
-    throw new ApplicationError(error.message);
+    const err = new ApplicationError(error.message);
+    return ctx.badRequest(err);
   }
 }
 
