@@ -1,5 +1,5 @@
-import controller from './controller';
+import tiktokAuth from './tiktok-auth';
 
 export default {
-  controller,
+  tiktokAuth,
 };

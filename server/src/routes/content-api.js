@@ -1,10 +1,10 @@
 export default [
   {
-    method: 'GET',
-    path: '/',
-    // name of the controller file & the method.
-    handler: 'controller.index',
+    method: 'POST',
+    path: '/connect',
+    handler: 'tiktokAuth.connect',
     config: {
+      auth: false,
       policies: [],
     },
   },
