@@ -33,8 +33,7 @@ export default ({ strapi }) => {
       const user = data.user;
 
       if (!user) {
-        console.log('User not exist.');
-        throw new ApplicationError('User not exist.');
+        throw new ApplicationError('User does not exist.');
       }
 
       return {
