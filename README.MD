@@ -8,9 +8,9 @@ It uses the official TikTok API [get-user-info](https://developers.tiktok.com/do
 
 # How it works
 
-TikTok Authentication happens on the device via `Continue with TikTok` button and then the client application should send `access_token` to the server.
+TikTok Authentication happens on the device via the `Continue with TikTok` button and then the client application should send `access_token` to the server.
 
-Because TikTok does not expose a publicly available JWKS (JSON Web Key Set) URL in the same way that authentication providers like Google or Apple do, this plugin coudnot validate recived token. Instead of token validation plugin uses this token to fetch user info from TikTok official API [get-user-info](https://developers.tiktok.com/doc/tiktok-api-v2-get-user-info).
+Because TikTok does not expose a publicly available JWKS (JSON Web Key Set) URL in the same way that authentication providers like Google or Apple do, this plugin is not able to validate received token. Instead of token validation plugin uses this token to fetch user info from TikTok official API [get-user-info](https://developers.tiktok.com/doc/tiktok-api-v2-get-user-info).
 
 If TikTok API returns a user user for provided `access_token`, then a Strapi user will be created.
 
@@ -22,12 +22,12 @@ More info can be found here: https://developers.tiktok.com/doc/login-kit-manage-
 # Features
 
 - Ability to authenticate users via mobile devices using TikTok API
-- JWT Authentication for users using strapi default user-permission collection
+- JWT Authentication for users using Strapi default user-permission collection
 - Secure
 
 # Activate the Plugin
 
-Add the following in `config/plugins.js` of you strapi application:
+Add the following in `config/plugins.js` of you Strapi application:
 
 ```js
 module.exports = {
@@ -42,13 +42,13 @@ module.exports = {
 
 1. Create a TikTok app from the [TikTok developers portal](https://developers.tiktok.com/apps).
 
-2. Select Platforms: Android and iOS, configure required option for both platform.
+2. Select Platforms: Android and iOS, configure required options for both platforms
 
-3. Add `Login Kit` Product and set Redirect URI both platform.
+3. Add `Login Kit` Product and set Redirect URI to both platforms.
 
 4. Add `user.info.profile` into Scopes.
 
-5. If you are using sandbox mode, then add a TikTok user accounts into Sandbox settings -> Target Users.
+5. If you are using sandbox mode, then add a TikTok user account into Sandbox settings -> Target Users.
 
 
 # How to use
@@ -58,7 +58,7 @@ module.exports = {
 The client retrieves a TikTok `access_token` when the user selects a TikTok Account.
 
 After a user successfully signs in, send the user's `access_token` to your server using HTTPS.
-Then, on the server, we are fetching the user profile information and use this information to establish a session (issue a jwt) or create a new account.
+Then, on the server, we fetch the user profile information and use this information to establish a session (issue a JWT) or create a new account.
 
 ```js
     {
@@ -98,7 +98,7 @@ If the TikTok user does not exist, an error will be returned:
     "error": {
         "status": 400,
         "name": "ApplicationError",
-        "message": "User not exist.",
+        "message": "User does not exist.",
         "details": {}
     }
 }
