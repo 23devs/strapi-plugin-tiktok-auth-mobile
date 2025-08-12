@@ -100,4 +100,5 @@ export async function connect(ctx) {
 
 export default {
   connect,
+  callback,
 };
