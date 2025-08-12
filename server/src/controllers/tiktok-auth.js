@@ -5,7 +5,8 @@ import {
   PLUGIN_API_NAMES,
   USERS_PERMISSIONS,
   JWT,
-  TIKTOK_AUTH
+  TIKTOK_AUTH,
+  REDIRECT_APP_URL,
 } from '../constants';
 
 const { ApplicationError, ForbiddenError } = errors;
@@ -18,11 +19,54 @@ const sanitizeUser = (user, ctx) => {
   return strapi.contentAPI.sanitize.output(user, userSchema, { auth });
 };
 
+export async function callback(ctx) {
+  const {
+    code,
+    scopes,
+    state,
+    error,
+    error_description
+  } = ctx.request.query;
+
+  if (error) {
+    const err = new ApplicationError(`${error}: ${error_description || 'description not available'}`);
+    return ctx.badRequest(err);
+  }
+
+  if (!scopes.contains('user.info.basic')) {
+    const err = new ApplicationError(`User haven't provided needed scopes`);
+    return ctx.badRequest(err);
+  }
+
+  if (!code) {
+    const err = new ApplicationError(`No code provided`);
+    return ctx.badRequest(err);
+  }
+  
+  // TODO: check state
+
+  try {
+    const data = await strapi
+      .plugin(PLUGIN_ID)
+      .service(TIKTOK_AUTH)
+      .getTiktokOauthToken({
+        code: decodeURIComponent(code),
+      });
+
+    const redirectUrl = `${REDIRECT_APP_URL}?access_token${data.accessToken.toString()}`;
+
+    console.log(`Redirecting to -> ${redirectUrl}`);
+
+    return ctx.redirect(redirectUrl);
+  } catch (error) {
+    const err = new ApplicationError(error.message);
+    return ctx.badRequest(err);
+  }
+}
+
 export async function connect(ctx) {
   const {
     access_token,
-    // redirect_uri,
-    // code_verifier,
   } = ctx.request.body;
 
   try {
@@ -31,8 +75,6 @@ export async function connect(ctx) {
       .service(TIKTOK_AUTH)
       .connect({
         accessToken: access_token,
-        // redirectUri: redirect_uri,
-        // codeVerifier: code_verifier,
       });
 
     if (user.blocked) {
