@@ -8,4 +8,13 @@ export default [
       policies: [],
     },
   },
+  {
+    method: 'GET',
+    path: '/callback',
+    handler: 'tiktokAuth.callback',
+    config: {
+      auth: false,
+      policies: [],
+    },
+  },
 ];

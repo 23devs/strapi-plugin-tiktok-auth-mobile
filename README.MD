@@ -50,6 +50,20 @@ module.exports = {
 
 5. If you are using sandbox mode, then add a TikTok user accounts into Sandbox settings -> Target Users.
 
+6. In your strapi .env file make sure to add variables from .env.example:
+
+```sh
+# your TikTok Developer App key and secret https://developers.tiktok.com/apps
+CLIENT_KEY="your-key"
+CLIENT_SECRET="your-secret"
+
+# url that will receive access token on client
+REDIRECT_APP_URL="https://example.com/redirect"
+
+# your strapi server url
+STRAPI_URL="https://api.example.com"
+```
+
 
 # How to use
 
@@ -98,7 +112,7 @@ If the TikTok user does not exist, an error will be returned:
     "error": {
         "status": 400,
         "name": "ApplicationError",
-        "message": "User not exist.",
+        "message": "User does not exist.",
         "details": {}
     }
 }

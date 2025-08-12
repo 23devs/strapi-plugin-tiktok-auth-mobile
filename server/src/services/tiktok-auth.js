@@ -1,13 +1,10 @@
 import { errors } from '@strapi/utils';
 import { toLower, find, isEmpty } from 'lodash';
 import axios, { isAxiosError } from 'axios';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const { ApplicationError } = errors;
 
-import { PLUGIN_API_NAMES, TIKTOK_GET_USER_INFO_URL } from '../constants';
+import { CLIENT_KEY, CLIENT_SECRET, GRANT_TYPE, PLUGIN_API_NAMES, REDIRECT_URI, TIKTOK_GET_USER_INFO_URL } from '../constants';
 
 export default ({ strapi }) => {
   const _getTiktokUser = async (accessToken) => {
@@ -33,8 +30,8 @@ export default ({ strapi }) => {
       const user = data.user;
 
       if (!user) {
-        console.log('User not exist.');
-        throw new ApplicationError('User not exist.');
+        console.log('User does not exist.');
+        throw new ApplicationError('User does not exist.');
       }
 
       return {
@@ -50,27 +47,51 @@ export default ({ strapi }) => {
     }
   };
 
-  const connect = async ({ accessToken, redirectUri, codeVerifier }) => {
+  const getTiktokOauthToken = async ({ code }) => {
+    if (!CLIENT_KEY || !CLIENT_SECRET || !REDIRECT_URI) {
+      throw new ApplicationError(`Unset environment variables: check CLIENT_KEY, CLIENT_SECRET, REDIRECT_URI`);
+    }
+
+    const url = TIKTOK_GET_OAUTH_TOKEN_URL;
+
+    try {
+      const response = await axios.post(
+        `${url}`,
+        {
+          'client_key': CLIENT_KEY,
+          'client_secret': CLIENT_SECRET,
+          'code': code,
+          'grant_type': GRANT_TYPE,
+          'redirect_uri': REDIRECT_URI,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": 'application/x-www-form-urlencoded',
+          },
+          timeout: 30000,
+        }
+      );
+
+      return {
+        accessToken: response.access_token,
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const err = `Failed to get TikTok token: ${error.message}`;
+        throw new ApplicationError(err);
+      }
+      throw error;
+    }
+  };
+
+  const connect = async ({ accessToken }) => {
     if (!accessToken) {
       throw new ApplicationError('No access token provided.');
     }
 
-    /* TODO: !!!
-    if (!redirectUri) {
-      throw new ApplicationError('No redirect Uri provided.');
-    }
-
-    if (!codeVerifier) {
-      throw new ApplicationError('No code verifier provided.');
-    }
-    */
-
     const profile = await _getTiktokUser(accessToken);
     const email = toLower(profile.email);
-
-    // if (!profile.verified) {
-    //   throw new ApplicationError('Ticktok user not verified.');
-    // }
 
     if (!email) {
       throw new ApplicationError('Email was not available.');
@@ -122,5 +143,6 @@ export default ({ strapi }) => {
 
   return {
     connect,
+    getTiktokOauthToken,
   };
 };
