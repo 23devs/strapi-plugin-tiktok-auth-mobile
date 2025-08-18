@@ -74,7 +74,6 @@ export default ({ strapi }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
             "Content-Type": 'application/x-www-form-urlencoded',
           },
           timeout: 30000,
