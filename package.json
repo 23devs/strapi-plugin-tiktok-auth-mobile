@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "keywords": [],
   "type": "commonjs",
   "exports": {
@@ -67,5 +67,6 @@
     "url": "https://github.com/23devs/strapi-plugin-tiktok-auth-mobile/issues"
   },
   "homepage": "https://github.com/23devs/strapi-plugin-tiktok-auth-mobile#readme",
-  "author": "23devs <developer@23devs.com>"
+  "author": "23devs <developer@23devs.com>",
+  "packageManager": "yarn@1.22.22"
 }
