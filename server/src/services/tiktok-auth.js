@@ -48,8 +48,11 @@ export default ({ strapi }) => {
 
   const getTiktokOauthToken = async ({ code }) => {
     if (!CLIENT_KEY || !CLIENT_SECRET || !REDIRECT_URI) {
+      console.log('No env variables');
       throw new ApplicationError(`Unset environment variables: check CLIENT_KEY, CLIENT_SECRET, REDIRECT_URI`);
     }
+
+    console.log(TIKTOK_GET_OAUTH_TOKEN_URL);
 
     const url = TIKTOK_GET_OAUTH_TOKEN_URL;
 
@@ -72,9 +75,11 @@ export default ({ strapi }) => {
         }
       );
 
+      console.log(response);
+
       return {
         accessToken: response.access_token,
-      }
+      };
     } catch (error) {
       if (isAxiosError(error)) {
         const err = `Failed to get TikTok token: ${error.message}`;

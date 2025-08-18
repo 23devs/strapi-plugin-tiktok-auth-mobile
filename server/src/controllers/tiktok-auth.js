@@ -20,6 +20,8 @@ const sanitizeUser = (user, ctx) => {
 };
 
 export async function callback(ctx) {
+  console.log('Tiktok Auth Callback');
+
   const {
     code,
     scopes,
@@ -29,14 +31,21 @@ export async function callback(ctx) {
   } = ctx.request.query;
 
   if (error) {
+    console.log(`error: ${error}`);
     const err = new ApplicationError(`${error}: ${error_description || 'description not available'}`);
     return ctx.badRequest(err);
   }
 
-  if (!scopes.contains('user.info.basic')) {
-    const err = new ApplicationError(`User haven't provided needed scopes`);
+  console.log('scopes');
+  console.log(`${scopes}`);
+
+  if (!scopes?.includes('user.info.basic')) {
+    const err = new ApplicationError(`User hasn't provided needed scopes`);
     return ctx.badRequest(err);
   }
+
+  console.log('code');
+  console.log(`${code}`);
 
   if (!code) {
     const err = new ApplicationError(`No code provided`);
