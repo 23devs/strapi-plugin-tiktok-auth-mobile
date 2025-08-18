@@ -61,7 +61,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:23devs/strapi-plugin-tiktok-auth-mobile.git"
+    "url": "git+ssh://git@github.com/23devs/strapi-plugin-tiktok-auth-mobile.git"
   },
   "bugs": {
     "url": "https://github.com/23devs/strapi-plugin-tiktok-auth-mobile/issues"
