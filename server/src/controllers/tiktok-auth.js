@@ -53,7 +53,7 @@ export async function callback(ctx) {
         code: decodeURIComponent(code),
       });
 
-    const redirectUrl = `${REDIRECT_APP_URL}?access_token${data.accessToken}`;
+    const redirectUrl = `${REDIRECT_APP_URL}?access_token=${data.accessToken}`;
 
     console.log(`Redirecting to -> ${redirectUrl}`);
 
