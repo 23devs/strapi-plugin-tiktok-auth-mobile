@@ -56,7 +56,6 @@ export default ({ strapi }) => {
 
   const getTiktokOauthToken = async ({ code }) => {
     if (!CLIENT_KEY || !CLIENT_SECRET || !REDIRECT_URI) {
-      console.log('No env variables');
       throw new ApplicationError(`Unset environment variables: check CLIENT_KEY, CLIENT_SECRET, REDIRECT_URI`);
     }
 
@@ -80,10 +79,8 @@ export default ({ strapi }) => {
         }
       );
 
-      console.log(response);
-
       return {
-        accessToken: response.access_token,
+        accessToken: response.data.access_token,
       };
     } catch (error) {
       if (isAxiosError(error)) {
