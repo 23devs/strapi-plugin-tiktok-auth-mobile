@@ -59,8 +59,11 @@ export async function callback(ctx) {
 
     return ctx.redirect(redirectUrl);
   } catch (error) {
-    const err = new ApplicationError(error.message);
-    return ctx.badRequest(err);
+    const redirectUrl = `${REDIRECT_APP_URL}?error=${error.message}`;
+
+    console.log(`Redirecting to -> ${redirectUrl}`);
+
+    return ctx.redirect(redirectUrl);
   }
 }
 

@@ -8,7 +8,7 @@ It uses the official TikTok API [get-user-info](https://developers.tiktok.com/do
 
 # How it works
 
-TikTok Authentication happens on the device via the `Continue with TikTok` button and then the client application should send `access_token` to the server.
+TikTok Authentication happens on the device via the `Continue with TikTok` button and then the client application should send `code` to the server. The server will retrieve `access_token` for the user with code from Tiktok API and send redirect to universal link that is associated with your app, passing the `access-token` in query parameters. And then the client application should send `access_token` to the server.
 
 Because TikTok does not expose a publicly available JWKS (JSON Web Key Set) URL in the same way that authentication providers like Google or Apple do, this plugin is not able to validate received token. Instead of token validation plugin uses this token to fetch user info from TikTok official API [get-user-info](https://developers.tiktok.com/doc/tiktok-api-v2-get-user-info).
 
@@ -40,15 +40,17 @@ module.exports = {
 
 # Configuration
 
+https://developers.tiktok.com/doc/getting-started-create-an-app
+
 1. Create a TikTok app from the [TikTok developers portal](https://developers.tiktok.com/apps).
 
-2. Select Platforms: Android and iOS, configure required options for both platforms
+2. Select Platforms: Android and iOS or Web, configure required options for both platforms
 
-3. Add `Login Kit` Product and set Redirect URI to both platforms.
+3. Add `Login Kit` Product and set Redirect URI for all your platforms. Redirect URI is the link e.g. https://api.example.com/api/tiktok-auth-mobile/callback, where api.example.com is the domain where your strapi app is deployed, and /api/tiktok-auth-mobile/callback - is the path to endpoint in the plugin that will handle obtaining tiktok access_token from it's API. 
 
-4. Add `user.info.profile` into Scopes.
+4. Add `user.info.profile` into Scopes (it also should contain `user.info.profile`).
 
-5. If you are using sandbox mode, then add a TikTok user account into Sandbox settings -> Target Users.
+5. If you are using sandbox mode, then add a TikTok user account into Sandbox settings -> Target Users (https://developers.tiktok.com/doc/add-a-sandbox).
 
 6. In your strapi .env file make sure to add variables from .env.example:
 
@@ -58,6 +60,8 @@ CLIENT_KEY="your-key"
 CLIENT_SECRET="your-secret"
 
 # url that will receive access token on client
+# where example.com - is the associated domain for your app
+# and /redirect is a specific path that will handle sending access_token to the server to authenticate
 REDIRECT_APP_URL="https://example.com/redirect"
 
 # your strapi server url
@@ -67,17 +71,37 @@ STRAPI_URL="https://api.example.com"
 
 # How to use
 
+### Obtain the authorization code in your app 
+
+Here you can find instructions for your platform: https://developers.tiktok.com/doc/login-kit-overview
+
+### Fetch an access token using an authorization code
+
+After obtaining the authorization code it will redirect to https://api.example.com/api/tiktok-auth-mobile/callback, providing scopes, state, code to the callback endpoint, so it will use them to get the access token from https://open.tiktokapis.com/v2/oauth/token/ OAuth endpoint. Do not forget to set your env variables (CLIENT_KEY, CLIENT_SECRET, REDIRECT_APP_URL, STRAPI_URL), otherwise the plugin will not work and demand you to set them. The Client Key and Client Secret can be obtained when setting your TikTok Developer App. The STRAPI_URL is the domain where your Strapi app is deployed (localhost is not accepted). And REDIRECT_APP_URL is the universal link for handling access_token, that your app can open. 
+
+After obtaining the access_token it will send it in the query parameter access_token back to your app, and your app will be able to open the link https://example.com/redirect?access_token=***********.
+
+https://developers.tiktok.com/doc/oauth-user-access-token-management
+
+If there was an error during obtaining token, it will redirect to your app with parameter error, which will contain error description.
+
+https://example.com/redirect?error=***********
+
+You can handle this in your app, show it to the user, allow them to try again.
+
 ### Authenticate User
 
-The client retrieves a TikTok `access_token` when the user selects a TikTok Account.
+The client retrieves a TikTok `access_token` via the universal link https://example.com/redirect?access_token=***********.
 
-After a user successfully signs in, send the user's `access_token` to your server using HTTPS.
+Send the user's `access_token` to your server using HTTPS.
 Then, on the server, we fetch the user profile information and use this information to establish a session (issue a JWT) or create a new account.
+
+In this example https://api.example.com - is the url for your strapi server.
 
 ```js
     {
         method: 'POST',
-        path: 'YOUR_STRAPI_BACKEND_URL/api/tiktok-auth-mobile/connect',
+        path: 'https://api.example.com/api/tiktok-auth-mobile/connect',
         data: {
           access_token: TOKEN
         }
