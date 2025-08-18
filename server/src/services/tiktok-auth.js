@@ -4,7 +4,15 @@ import axios, { isAxiosError } from 'axios';
 
 const { ApplicationError } = errors;
 
-import { CLIENT_KEY, CLIENT_SECRET, GRANT_TYPE, PLUGIN_API_NAMES, REDIRECT_URI, TIKTOK_GET_USER_INFO_URL } from '../constants';
+import { 
+  CLIENT_KEY, 
+  CLIENT_SECRET, 
+  GRANT_TYPE, 
+  PLUGIN_API_NAMES, 
+  REDIRECT_URI, 
+  TIKTOK_GET_USER_INFO_URL,
+  TIKTOK_GET_OAUTH_TOKEN_URL 
+} from '../constants';
 
 export default ({ strapi }) => {
   const _getTiktokUser = async (accessToken) => {
@@ -51,8 +59,6 @@ export default ({ strapi }) => {
       console.log('No env variables');
       throw new ApplicationError(`Unset environment variables: check CLIENT_KEY, CLIENT_SECRET, REDIRECT_URI`);
     }
-
-    console.log(TIKTOK_GET_OAUTH_TOKEN_URL);
 
     const url = TIKTOK_GET_OAUTH_TOKEN_URL;
 
